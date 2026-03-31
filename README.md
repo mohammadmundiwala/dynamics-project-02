@@ -5,6 +5,7 @@ i thought we can use the readme to organize the different tasks people are worki
 if you read this, add your favorite greek letter. 
 
 $\xi$ (Mo)
+don't have one $\omega (Alaina)
 
 -------------------------------------------------------------
 | task item | progress note | completed (Y/N)|
