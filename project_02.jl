@@ -226,7 +226,7 @@ gif(anim, "dual_slider_kinematics.gif", fps=15)
 md"""
 ## Final remarks
 
-- While this system is considered highly constrained and relatively simple to model, many real world applications of this technique would require much more complex equations. The lack of a third dimension allows us to ignore the additional three degrees of freedom per component significantly simplifying the model. As shown, the path of the center of mass is a perfect circle. This is because the symmetry of the system. Therefore, this gives insight on how to convert translational motion into rotational motion that is easily predictable.
+- While this system is considered highly constrained and relatively simple to model, many real world applications of this technique would require much more complex equations. The lack of a third dimension allows us to ignore the additional three degrees of freedom per component significantly simplifying the model. As shown, the path of the center of mass is a perfect circle. This is because of the symmetry of the system. Therefore, this gives insight on how to convert translational motion into rotational motion that is easily predictable.
 
 - This type of model has many real world applications. For example, the force acting on the pins at a given time could be determined using the acceleration equations. If the material specifications of the pins and bar were known, as well as, the tolerances of the pins relative to the holes in the bar, the maximum RPM before mechanical failure (reaching yield stress) could be calculated. 
 
