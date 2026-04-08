@@ -286,6 +286,98 @@ begin
 end
 
 
+# ╔═╡ aafde44e-40bc-4e66-beae-d56593ed4c91
+md"""
+## Extending kinematic constraints to a new mechanism 
+"""
+
+# ╔═╡ becdcf0a-6859-460d-8697-f186d6f10814
+begin
+    # Four-bar linkage: windshield wiper
+
+    O2 = [0.0, 0.0]
+    O4 = [0.22, 0.0]
+
+    r2 = 0.05
+    r3 = 0.18
+    r4 = 0.12
+    r1 = norm(O4 - O2)
+
+    blade_len = 0.16
+    end_link_len = 0.08
+    end_link_offset = deg2rad(10.0)
+
+    theta2_vals = range(0, 2π, length=140)
+
+    tip_path_x = Float64[]
+    tip_path_y = Float64[]
+
+    c_ground = :gray55
+    c_linkage = :gray65
+    c_wiper_arm = RGB(0.18, 0.33, 0.55)
+    c_blade = RGB(0.35, 0.58, 0.78)
+    c_path = RGBA(0.35, 0.58, 0.78, 0.30)
+    c_joint = :black
+
+    wiper_anim = @animate for theta2 in theta2_vals
+        A = O2 .+ r2 .* [cos(theta2), sin(theta2)]
+        d = norm(O4 - A)
+
+        a = (r3^2 - r4^2 + d^2) / (2d)
+        h_sq = max(r3^2 - a^2, 0.0)
+        h = sqrt(h_sq)
+
+        P2 = A .+ a .* (O4 - A) ./ d
+        x3a = P2[1] + h * (O4[2] - A[2]) / d
+        y3a = P2[2] - h * (O4[1] - A[1]) / d
+        x3b = P2[1] - h * (O4[2] - A[2]) / d
+        y3b = P2[2] + h * (O4[1] - A[1]) / d
+        B = y3a >= y3b ? [x3a, y3a] : [x3b, y3b]
+
+        rocker_angle = atan(B[2] - O4[2], B[1] - O4[1])
+        blade_tip = O4 .+ blade_len .* [cos(rocker_angle), sin(rocker_angle)]
+
+        end_link_angle = rocker_angle + end_link_offset
+        end_link_pt1 = blade_tip .- (end_link_len / 2) .* [cos(end_link_angle), sin(end_link_angle)]
+        end_link_pt2 = blade_tip .+ (end_link_len / 2) .* [cos(end_link_angle), sin(end_link_angle)]
+
+        push!(tip_path_x, blade_tip[1])
+        push!(tip_path_y, blade_tip[2])
+
+        plot(xlims=(-0.08, 0.25), ylims=(-0.067, 0.21),
+                 aspect_ratio=:equal, title="Four-Bar Windshield Wiper",
+                 legend=false, grid=true, dpi = 300)
+
+        plot!(tip_path_x, tip_path_y, linestyle=:dot, linewidth=2, color=c_path)
+        plot!([O2[1], O4[1]], [O2[2], O4[2]], linewidth=4, color=c_ground)
+        plot!([O2[1], A[1]], [O2[2], A[2]], linewidth=3, color=c_linkage)
+        plot!([A[1], B[1]], [A[2], B[2]], linewidth=3, color=c_linkage)
+        plot!([O4[1], B[1]], [O4[2], B[2]], linewidth=3, color=c_linkage)
+
+        # actual wiper
+        plot!([O4[1], blade_tip[1]], [O4[2], blade_tip[2]],
+              linewidth=6, color=c_wiper_arm)
+
+        plot!([end_link_pt1[1], end_link_pt2[1]],
+              [end_link_pt1[2], end_link_pt2[2]],
+              linewidth=8, color=c_blade)
+
+        # joints
+        scatter!([O2[1], A[1], B[1], O4[1]],
+                 [O2[2], A[2], B[2], O4[2]],
+                 markersize=5, color=c_joint)
+
+        # blade tip highlighted
+        scatter!([blade_tip[1]], [blade_tip[2]], markersize=6, color=c_blade)
+
+        # annotation
+        annotate!(0.26, 0.06, text("wiper arm", 10, c_wiper_arm))
+        annotate!(0.26, 0.15, text("wiper blade", 10, c_blade))
+    end
+
+    gif(wiper_anim, "four_bar_wiper.gif", fps=30)
+end
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -1442,5 +1534,7 @@ version = "1.13.0+0"
 # ╠═f9755d87-9b3b-4552-aba8-0039081063db
 # ╠═96abe86c-8c00-4c67-95b3-cbb42982cc99
 # ╠═6c92b0d8-96fd-4c22-bf28-b7a984edc77d
+# ╟─aafde44e-40bc-4e66-beae-d56593ed4c91
+# ╠═becdcf0a-6859-460d-8697-f186d6f10814
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
